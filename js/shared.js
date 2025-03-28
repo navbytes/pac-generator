@@ -22,6 +22,8 @@ document.addEventListener("DOMContentLoaded", function () {
  */
 function initTheme() {
   const themeToggle = document.getElementById("themeToggle");
+  if (!themeToggle) return;
+
   const themeIcon = document.getElementById("themeIcon");
   const themeText = document.getElementById("themeText");
 
@@ -31,7 +33,7 @@ function initTheme() {
 
   // Theme toggle button
   themeToggle.addEventListener("click", () => {
-    const isDark = document.body.classList.contains("dark-theme");
+    const isDark = document.documentElement.classList.contains("dark-theme");
     const newTheme = isDark ? "light" : "dark";
 
     setTheme(newTheme);
@@ -40,13 +42,15 @@ function initTheme() {
 
   function setTheme(theme) {
     if (theme === "dark") {
+      document.documentElement.classList.add("dark-theme");
       document.body.classList.add("dark-theme");
-      themeIcon.className = "ri-moon-line mr-1.5";
-      themeText.textContent = "Dark Mode";
+      if (themeIcon) themeIcon.className = "ri-moon-line mr-1.5";
+      if (themeText) themeText.textContent = "Dark Mode";
     } else {
+      document.documentElement.classList.remove("dark-theme");
       document.body.classList.remove("dark-theme");
-      themeIcon.className = "ri-sun-line mr-1.5";
-      themeText.textContent = "Light Mode";
+      if (themeIcon) themeIcon.className = "ri-sun-line mr-1.5";
+      if (themeText) themeText.textContent = "Light Mode";
     }
   }
 }
