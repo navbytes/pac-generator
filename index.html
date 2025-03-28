@@ -1,0 +1,2007 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PAC Script Generator | Enterprise Network Tools</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css"
+      rel="stylesheet"
+    />
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                50: "#f0f9ff",
+                100: "#e0f2fe",
+                200: "#bae6fd",
+                300: "#7dd3fc",
+                400: "#38bdf8",
+                500: "#0ea5e9",
+                600: "#0284c7",
+                700: "#0369a1",
+                800: "#075985",
+                900: "#0c4a6e",
+                950: "#082f49",
+              },
+              secondary: {
+                50: "#f0fdfa",
+                100: "#ccfbf1",
+                200: "#99f6e4",
+                300: "#5eead4",
+                400: "#2dd4bf",
+                500: "#14b8a6",
+                600: "#0d9488",
+                700: "#0f766e",
+                800: "#115e59",
+                900: "#134e4a",
+                950: "#042f2e",
+              },
+            },
+            fontFamily: {
+              sans: ["Inter", "sans-serif"],
+              mono: [
+                "SFMono-Regular",
+                "Menlo",
+                "Monaco",
+                "Consolas",
+                "monospace",
+              ],
+            },
+            boxShadow: {
+              card: "0 2px 15px -3px rgba(0, 0, 0, 0.07), 0 10px 20px -2px rgba(0, 0, 0, 0.04)",
+            },
+          },
+        },
+      };
+    </script>
+  </head>
+  <body class="bg-slate-50 text-slate-800 font-sans">
+    <div class="container max-w-6xl mx-auto px-4 py-8 md:px-6 lg:px-8">
+      <header class="text-center mb-10">
+        <div class="flex justify-center items-center mb-4">
+          <div class="bg-primary-500 text-white p-3 rounded-full">
+            <i class="ri-code-box-line text-2xl"></i>
+          </div>
+        </div>
+        <h1 class="text-3xl font-bold text-slate-800 mb-3">
+          PAC Script Generator
+        </h1>
+        <p class="text-slate-600 max-w-xl mx-auto text-lg">
+          Create efficient and customized Proxy Auto-Configuration scripts for
+          your enterprise network.
+        </p>
+      </header>
+
+      <div
+        class="bg-white rounded-xl shadow-card border border-slate-200 overflow-hidden"
+      >
+        <!-- Tabs -->
+        <div class="flex border-b border-slate-200">
+          <button
+            class="tab-btn active px-5 py-4 font-medium text-sm focus:outline-none flex items-center gap-2 border-b-2 border-primary-500 text-primary-600"
+            data-tab="builder"
+          >
+            <i class="ri-tools-line"></i> Builder
+          </button>
+          <button
+            class="tab-btn px-5 py-4 font-medium text-sm text-slate-600 hover:text-slate-900 focus:outline-none flex items-center gap-2 border-b-2 border-transparent"
+            data-tab="documentation"
+          >
+            <i class="ri-book-2-line"></i> Documentation
+          </button>
+          <button
+            class="tab-btn px-5 py-4 font-medium text-sm text-slate-600 hover:text-slate-900 focus:outline-none flex items-center gap-2 border-b-2 border-transparent"
+            data-tab="about"
+          >
+            <i class="ri-information-line"></i> About PAC Scripts
+          </button>
+        </div>
+
+        <!-- Tab Content -->
+        <div class="p-6">
+          <!-- Success notification -->
+          <div
+            id="copySuccess"
+            class="hidden mb-6 flex items-center p-4 bg-green-50 border-l-4 border-green-500 rounded-md"
+          >
+            <i class="ri-checkbox-circle-line text-green-500 mr-3 text-lg"></i>
+            <p class="text-green-700 font-medium">
+              PAC script successfully copied to clipboard!
+            </p>
+          </div>
+
+          <!-- Builder Tab -->
+          <div id="builder" class="tab-content">
+            <div class="mb-6">
+              <label
+                for="defaultProxy"
+                class="block text-sm font-medium text-slate-700 mb-2"
+                >Default Proxy:</label
+              >
+              <input
+                type="text"
+                id="defaultProxy"
+                placeholder="DIRECT or PROXY host:port or SOCKS host:port"
+                class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
+              />
+              <p class="mt-2 text-sm text-slate-500">
+                Example: PROXY 192.168.1.100:8080 or DIRECT
+              </p>
+            </div>
+
+            <div class="flex items-center mb-4">
+              <div class="flex-shrink-0 text-primary-500 mr-2">
+                <i class="ri-list-check-2"></i>
+              </div>
+              <h3
+                class="text-lg font-semibold text-slate-800 pb-2 border-b border-slate-200 flex-grow"
+              >
+                Proxy Rules
+              </h3>
+            </div>
+
+            <div id="rulesContainer" class="mb-6 space-y-4">
+              <div
+                id="emptyState"
+                class="border-2 border-dashed border-slate-200 rounded-lg p-8 text-center"
+              >
+                <div
+                  class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-slate-100 text-slate-400 mb-4"
+                >
+                  <i class="ri-folder-open-line text-2xl"></i>
+                </div>
+                <p class="text-slate-500">
+                  No rules added yet. Use the buttons below to add proxy routing
+                  rules.
+                </p>
+              </div>
+            </div>
+
+            <div class="flex flex-wrap gap-3 mb-8">
+              <button
+                id="addHostRule"
+                class="flex items-center px-4 py-2.5 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-lg shadow-sm transition-colors"
+              >
+                <i class="ri-server-line mr-2 text-primary-500"></i> Host Rule
+              </button>
+              <button
+                id="addUrlRule"
+                class="flex items-center px-4 py-2.5 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-lg shadow-sm transition-colors"
+              >
+                <i class="ri-link mr-2 text-primary-500"></i> URL Rule
+              </button>
+              <button
+                id="addIpRule"
+                class="flex items-center px-4 py-2.5 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-lg shadow-sm transition-colors"
+              >
+                <i class="ri-router-line mr-2 text-primary-500"></i> IP Rule
+              </button>
+              <button
+                id="addDnsDomainRule"
+                class="flex items-center px-4 py-2.5 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-lg shadow-sm transition-colors"
+              >
+                <i class="ri-global-line mr-2 text-primary-500"></i> DNS Domain
+                Rule
+              </button>
+            </div>
+
+            <div class="mb-6">
+              <label
+                for="additionalFunctions"
+                class="block text-sm font-medium text-slate-700 mb-2"
+                >Additional Custom Functions (optional):</label
+              >
+              <textarea
+                id="additionalFunctions"
+                placeholder="// Add any custom JavaScript functions here..."
+                class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors font-mono text-sm h-40"
+              ></textarea>
+              <p class="mt-2 text-sm text-slate-500">
+                Add your own custom logic or helper functions that will be
+                included in the PAC script.
+              </p>
+            </div>
+
+            <div class="mb-6">
+              <button
+                id="generateScript"
+                class="flex items-center px-5 py-2.5 bg-secondary-600 hover:bg-secondary-700 text-white rounded-lg shadow-sm transition-colors font-medium"
+              >
+                <i class="ri-code-s-slash-line mr-2"></i> Generate PAC Script
+              </button>
+            </div>
+
+            <div class="mb-6">
+              <label
+                for="output"
+                class="block text-sm font-medium text-slate-700 mb-2"
+                >Generated PAC Script:</label
+              >
+              <div class="relative">
+                <textarea
+                  id="output"
+                  readonly
+                  placeholder="Your generated PAC script will appear here..."
+                  class="w-full px-4 py-2.5 rounded-lg border border-slate-300 bg-slate-50 font-mono text-sm h-60"
+                ></textarea>
+              </div>
+            </div>
+
+            <div class="flex flex-wrap gap-3">
+              <button
+                id="copyScript"
+                class="flex items-center px-5 py-2.5 bg-primary-600 hover:bg-primary-700 text-white rounded-lg shadow-sm transition-colors font-medium"
+              >
+                <i class="ri-file-copy-line mr-2"></i> Copy to Clipboard
+              </button>
+              <button
+                id="downloadScript"
+                class="flex items-center px-5 py-2.5 bg-white border border-primary-600 text-primary-600 hover:bg-primary-50 rounded-lg shadow-sm transition-colors font-medium"
+              >
+                <i class="ri-download-line mr-2"></i> Download Script
+              </button>
+            </div>
+          </div>
+
+          <!-- Documentation Tab -->
+          <div id="documentation" class="tab-content hidden">
+            <div class="mb-6">
+              <h2
+                class="text-2xl font-bold text-slate-800 mb-2 flex items-center gap-2"
+              >
+                <i class="ri-book-2-line text-primary-500"></i> PAC Script
+                Documentation
+              </h2>
+              <p class="text-slate-600">
+                Comprehensive guide to Proxy Auto-Configuration (PAC) scripts,
+                their functions, and implementation.
+              </p>
+            </div>
+
+            <!-- Table of Contents -->
+            <div
+              class="bg-slate-50 p-4 rounded-lg border border-slate-200 mb-8"
+            >
+              <h3 class="font-semibold text-slate-800 mb-3">
+                Table of Contents
+              </h3>
+              <ol class="list-decimal ml-5 space-y-1 text-primary-700">
+                <li>
+                  <a href="#rule-types" class="hover:underline">Rule Types</a>
+                </li>
+                <li>
+                  <a href="#pac-functions" class="hover:underline"
+                    >PAC Functions Reference</a
+                  >
+                </li>
+                <li>
+                  <a href="#return-values" class="hover:underline"
+                    >Return Value Format</a
+                  >
+                </li>
+                <li>
+                  <a href="#advanced-techniques" class="hover:underline"
+                    >Advanced Techniques</a
+                  >
+                </li>
+                <li>
+                  <a href="#best-practices" class="hover:underline"
+                    >Best Practices</a
+                  >
+                </li>
+                <li>
+                  <a href="#troubleshooting" class="hover:underline"
+                    >Troubleshooting</a
+                  >
+                </li>
+              </ol>
+            </div>
+
+            <!-- Rule Types Section -->
+            <div id="rule-types" class="mb-10">
+              <h3
+                class="text-xl font-semibold text-slate-800 mb-4 flex items-center gap-2 pb-2 border-b border-slate-200"
+              >
+                <i class="ri-list-settings-line text-primary-500"></i> Rule
+                Types
+              </h3>
+
+              <p class="mb-4 text-slate-700">
+                PAC scripts can include different types of rules to match
+                various network conditions. Our generator supports the following
+                rule types:
+              </p>
+
+              <div class="space-y-5">
+                <div
+                  class="bg-white rounded-lg border border-slate-200 overflow-hidden"
+                >
+                  <div class="bg-slate-50 px-4 py-3 border-b border-slate-200">
+                    <div class="flex items-center gap-2">
+                      <i class="ri-server-line text-primary-500"></i>
+                      <h4 class="font-semibold text-slate-800">Host Rule</h4>
+                    </div>
+                  </div>
+                  <div class="p-4">
+                    <p class="text-slate-700 mb-3">
+                      Matches a specific hostname exactly. Use this for
+                      targeting individual servers or domains.
+                    </p>
+
+                    <div
+                      class="bg-slate-50 p-3 rounded border border-slate-200 mb-3"
+                    >
+                      <h5 class="font-medium text-sm mb-1">Example:</h5>
+                      <div class="font-mono text-sm">
+                        <p>if (host === "example.com") {</p>
+                        <p class="pl-4">
+                          return "PROXY proxy.company.com:8080";
+                        </p>
+                        <p>}</p>
+                      </div>
+                    </div>
+
+                    <div class="text-sm text-slate-600">
+                      <p>
+                        <strong>Use when:</strong> You need to apply a specific
+                        proxy for an exact hostname.
+                      </p>
+                      <p>
+                        <strong>Limitations:</strong> Doesn't match subdomains.
+                        "example.com" won't match "sub.example.com".
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div
+                  class="bg-white rounded-lg border border-slate-200 overflow-hidden"
+                >
+                  <div class="bg-slate-50 px-4 py-3 border-b border-slate-200">
+                    <div class="flex items-center gap-2">
+                      <i class="ri-link text-primary-500"></i>
+                      <h4 class="font-semibold text-slate-800">URL Rule</h4>
+                    </div>
+                  </div>
+                  <div class="p-4">
+                    <p class="text-slate-700 mb-3">
+                      Matches URLs against shell-like wildcard patterns. Use
+                      this for matching specific URL patterns including
+                      protocols, paths, and query parameters.
+                    </p>
+
+                    <div
+                      class="bg-slate-50 p-3 rounded border border-slate-200 mb-3"
+                    >
+                      <h5 class="font-medium text-sm mb-1">Example:</h5>
+                      <div class="font-mono text-sm">
+                        <p>
+                          if (shExpMatch(lUrl, "http://*.example.com/secure/*"))
+                          {
+                        </p>
+                        <p class="pl-4">
+                          return "PROXY secureproxy.company.com:8443";
+                        </p>
+                        <p>}</p>
+                      </div>
+                    </div>
+
+                    <div class="text-sm text-slate-600">
+                      <p>
+                        <strong>Use when:</strong> You need to match URLs with
+                        specific paths or protocols.
+                      </p>
+                      <p>
+                        <strong>Wildcards:</strong> "*" matches any sequence of
+                        characters, "?" matches exactly one character.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div
+                  class="bg-white rounded-lg border border-slate-200 overflow-hidden"
+                >
+                  <div class="bg-slate-50 px-4 py-3 border-b border-slate-200">
+                    <div class="flex items-center gap-2">
+                      <i class="ri-router-line text-primary-500"></i>
+                      <h4 class="font-semibold text-slate-800">IP Rule</h4>
+                    </div>
+                  </div>
+                  <div class="p-4">
+                    <p class="text-slate-700 mb-3">
+                      Matches IP addresses or ranges using subnet notation. Use
+                      this for targeting networks by IP address.
+                    </p>
+
+                    <div
+                      class="bg-slate-50 p-3 rounded border border-slate-200 mb-3"
+                    >
+                      <h5 class="font-medium text-sm mb-1">Example:</h5>
+                      <div class="font-mono text-sm">
+                        <p>
+                          if (isInNet(dnsResolve(host), "192.168.1.0",
+                          "255.255.255.0")) {
+                        </p>
+                        <p class="pl-4">return "DIRECT";</p>
+                        <p>}</p>
+                      </div>
+                    </div>
+
+                    <div class="text-sm text-slate-600">
+                      <p>
+                        <strong>Use when:</strong> You need to route traffic
+                        based on IP addresses or network ranges.
+                      </p>
+                      <p>
+                        <strong>Note:</strong> Often used to identify internal
+                        networks that should bypass proxies.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div
+                  class="bg-white rounded-lg border border-slate-200 overflow-hidden"
+                >
+                  <div class="bg-slate-50 px-4 py-3 border-b border-slate-200">
+                    <div class="flex items-center gap-2">
+                      <i class="ri-global-line text-primary-500"></i>
+                      <h4 class="font-semibold text-slate-800">
+                        DNS Domain Rule
+                      </h4>
+                    </div>
+                  </div>
+                  <div class="p-4">
+                    <p class="text-slate-700 mb-3">
+                      Matches a domain and all its subdomains. Use this for
+                      targeting entire domains including all subdomains.
+                    </p>
+
+                    <div
+                      class="bg-slate-50 p-3 rounded border border-slate-200 mb-3"
+                    >
+                      <h5 class="font-medium text-sm mb-1">Example:</h5>
+                      <div class="font-mono text-sm">
+                        <p>if (dnsDomainIs(host, ".example.com")) {</p>
+                        <p class="pl-4">
+                          return "PROXY company-proxy.com:8080";
+                        </p>
+                        <p>}</p>
+                      </div>
+                    </div>
+
+                    <div class="text-sm text-slate-600">
+                      <p>
+                        <strong>Use when:</strong> You need to apply the same
+                        proxy for a domain and all its subdomains.
+                      </p>
+                      <p>
+                        <strong>Note:</strong> Include the leading dot (e.g.,
+                        ".example.com") to match the domain and all subdomains.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- PAC Functions Section -->
+            <div id="pac-functions" class="mb-10">
+              <h3
+                class="text-xl font-semibold text-slate-800 mb-4 flex items-center gap-2 pb-2 border-b border-slate-200"
+              >
+                <i class="ri-function-line text-primary-500"></i> PAC Functions
+                Reference
+              </h3>
+
+              <p class="mb-4 text-slate-700">
+                PAC scripts include several built-in JavaScript functions to
+                help determine the appropriate proxy. Here's a comprehensive
+                reference to these functions:
+              </p>
+
+              <div class="space-y-5">
+                <!-- Host Matching Functions -->
+                <div>
+                  <h4 class="font-semibold text-slate-800 mb-3">
+                    Host Matching Functions
+                  </h4>
+
+                  <div
+                    class="bg-slate-50 rounded-lg p-4 border border-slate-200 mb-4"
+                  >
+                    <h5 class="font-semibold text-primary-700 mb-2">
+                      isPlainHostName(host)
+                    </h5>
+                    <div
+                      class="bg-slate-100 p-3 rounded font-mono text-sm mb-2 overflow-x-auto"
+                    >
+                      isPlainHostName("www"); // returns true
+                      isPlainHostName("www.example.com"); // returns false
+                    </div>
+                    <p class="text-slate-700 text-sm mb-2">
+                      Returns true if the hostname has no domain portion (no
+                      dots). Useful for identifying intranet sites.
+                    </p>
+                    <div class="text-sm text-slate-600">
+                      <p><strong>Parameters:</strong></p>
+                      <ul class="list-disc ml-5 mb-2">
+                        <li><code>host</code>: The hostname to test</li>
+                      </ul>
+                      <p>
+                        <strong>Common Usage:</strong> Identifying internal
+                        hostnames without qualified domain names.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div
+                    class="bg-slate-50 rounded-lg p-4 border border-slate-200 mb-4"
+                  >
+                    <h5 class="font-semibold text-primary-700 mb-2">
+                      dnsDomainIs(host, domain)
+                    </h5>
+                    <div
+                      class="bg-slate-100 p-3 rounded font-mono text-sm mb-2 overflow-x-auto"
+                    >
+                      dnsDomainIs("www.example.com", ".example.com"); // returns
+                      true dnsDomainIs("example.com", ".example.com"); //
+                      returns true dnsDomainIs("example.org", ".example.com");
+                      // returns false
+                    </div>
+                    <p class="text-slate-700 text-sm mb-2">
+                      Returns true if the hostname ends with the specified
+                      domain.
+                    </p>
+                    <div class="text-sm text-slate-600">
+                      <p><strong>Parameters:</strong></p>
+                      <ul class="list-disc ml-5 mb-2">
+                        <li><code>host</code>: The hostname to test</li>
+                        <li>
+                          <code>domain</code>: The domain to check (usually
+                          starts with a dot)
+                        </li>
+                      </ul>
+                      <p>
+                        <strong>Common Usage:</strong> Matching a domain and all
+                        its subdomains.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div
+                    class="bg-slate-50 rounded-lg p-4 border border-slate-200"
+                  >
+                    <h5 class="font-semibold text-primary-700 mb-2">
+                      localHostOrDomainIs(host, hostdom)
+                    </h5>
+                    <div
+                      class="bg-slate-100 p-3 rounded font-mono text-sm mb-2 overflow-x-auto"
+                    >
+                      localHostOrDomainIs("www", "www.example.com"); // returns
+                      true localHostOrDomainIs("www.example.com",
+                      "www.example.com"); // returns true
+                      localHostOrDomainIs("sub.example.com", "www.example.com");
+                      // returns false
+                    </div>
+                    <p class="text-slate-700 text-sm mb-2">
+                      Returns true if the hostname is exactly equal to hostdom,
+                      or if there is no domain in hostname and hostdom starts
+                      with hostname.
+                    </p>
+                    <div class="text-sm text-slate-600">
+                      <p><strong>Parameters:</strong></p>
+                      <ul class="list-disc ml-5 mb-2">
+                        <li><code>host</code>: The hostname to test</li>
+                        <li>
+                          <code>hostdom</code>: The hostname to compare against
+                        </li>
+                      </ul>
+                      <p>
+                        <strong>Common Usage:</strong> Matching both abbreviated
+                        and fully qualified hostnames.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- URL Matching Functions -->
+                <div>
+                  <h4 class="font-semibold text-slate-800 mb-3">
+                    URL Matching Functions
+                  </h4>
+
+                  <div
+                    class="bg-slate-50 rounded-lg p-4 border border-slate-200"
+                  >
+                    <h5 class="font-semibold text-primary-700 mb-2">
+                      shExpMatch(str, pattern)
+                    </h5>
+                    <div
+                      class="bg-slate-100 p-3 rounded font-mono text-sm mb-2 overflow-x-auto"
+                    >
+                      shExpMatch("http://www.example.com/path/file.html",
+                      "http://*.example.com/path/*"); // returns true
+                      shExpMatch("file.txt", "*.txt"); // returns true
+                      shExpMatch("file.doc", "*.txt"); // returns false
+                    </div>
+                    <p class="text-slate-700 text-sm mb-2">
+                      Matches a string against a shell-like wildcard pattern.
+                    </p>
+                    <div class="text-sm text-slate-600">
+                      <p><strong>Parameters:</strong></p>
+                      <ul class="list-disc ml-5 mb-2">
+                        <li>
+                          <code>str</code>: The string to test (usually a URL)
+                        </li>
+                        <li>
+                          <code>pattern</code>: The pattern to match against
+                        </li>
+                      </ul>
+                      <p><strong>Wildcards:</strong></p>
+                      <ul class="list-disc ml-5 mb-2">
+                        <li>
+                          <code>*</code>: Matches any sequence of characters
+                        </li>
+                        <li><code>?</code>: Matches exactly one character</li>
+                      </ul>
+                      <p>
+                        <strong>Common Usage:</strong> Matching URL patterns,
+                        file types, or domains with wildcards.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- IP and Network Functions -->
+                <div>
+                  <h4 class="font-semibold text-slate-800 mb-3">
+                    IP and Network Functions
+                  </h4>
+
+                  <div
+                    class="bg-slate-50 rounded-lg p-4 border border-slate-200 mb-4"
+                  >
+                    <h5 class="font-semibold text-primary-700 mb-2">
+                      isInNet(host, pattern, mask)
+                    </h5>
+                    <div
+                      class="bg-slate-100 p-3 rounded font-mono text-sm mb-2 overflow-x-auto"
+                    >
+                      isInNet("192.168.1.1", "192.168.1.0", "255.255.255.0"); //
+                      returns true isInNet("192.168.2.1", "192.168.1.0",
+                      "255.255.255.0"); // returns false
+                      isInNet(dnsResolve("intranet.company.com"), "10.0.0.0",
+                      "255.0.0.0"); // returns true if in 10.x.x.x range
+                    </div>
+                    <p class="text-slate-700 text-sm mb-2">
+                      Returns true if the IP address of the host is within the
+                      specified subnet.
+                    </p>
+                    <div class="text-sm text-slate-600">
+                      <p><strong>Parameters:</strong></p>
+                      <ul class="list-disc ml-5 mb-2">
+                        <li>
+                          <code>host</code>: An IP address or hostname (if
+                          hostname, it's resolved to an IP)
+                        </li>
+                        <li>
+                          <code>pattern</code>: The base IP address of the
+                          subnet
+                        </li>
+                        <li>
+                          <code>mask</code>: The subnet mask in dotted decimal
+                          notation
+                        </li>
+                      </ul>
+                      <p>
+                        <strong>Common Usage:</strong> Identifying internal
+                        networks or specific network segments.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div
+                    class="bg-slate-50 rounded-lg p-4 border border-slate-200 mb-4"
+                  >
+                    <h5 class="font-semibold text-primary-700 mb-2">
+                      dnsResolve(host)
+                    </h5>
+                    <div
+                      class="bg-slate-100 p-3 rounded font-mono text-sm mb-2 overflow-x-auto"
+                    >
+                      dnsResolve("www.example.com"); // might return
+                      "93.184.216.34" isInNet(dnsResolve("www.example.com"),
+                      "93.184.216.0", "255.255.255.0"); // combines DNS
+                      resolution with network check
+                    </div>
+                    <p class="text-slate-700 text-sm mb-2">
+                      Resolves the given hostname to an IP address.
+                    </p>
+                    <div class="text-sm text-slate-600">
+                      <p><strong>Parameters:</strong></p>
+                      <ul class="list-disc ml-5 mb-2">
+                        <li><code>host</code>: The hostname to resolve</li>
+                      </ul>
+                      <p>
+                        <strong>Common Usage:</strong> Converting hostnames to
+                        IP addresses for IP-based rules.
+                      </p>
+                      <p>
+                        <strong>Note:</strong> May cause delay in PAC execution
+                        due to DNS lookup time. Use cautiously.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div
+                    class="bg-slate-50 rounded-lg p-4 border border-slate-200"
+                  >
+                    <h5 class="font-semibold text-primary-700 mb-2">
+                      isResolvable(host)
+                    </h5>
+                    <div
+                      class="bg-slate-100 p-3 rounded font-mono text-sm mb-2 overflow-x-auto"
+                    >
+                      isResolvable("www.example.com"); // returns true if DNS
+                      lookup succeeds isResolvable("nonexistent.example.com");
+                      // likely returns false
+                    </div>
+                    <p class="text-slate-700 text-sm mb-2">
+                      Returns true if the hostname can be resolved to an IP
+                      address.
+                    </p>
+                    <div class="text-sm text-slate-600">
+                      <p><strong>Parameters:</strong></p>
+                      <ul class="list-disc ml-5 mb-2">
+                        <li><code>host</code>: The hostname to check</li>
+                      </ul>
+                      <p>
+                        <strong>Common Usage:</strong> Detecting available hosts
+                        or validating hostnames.
+                      </p>
+                      <p>
+                        <strong>Note:</strong> Like dnsResolve(), this may
+                        introduce delays and should be used sparingly.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Time-Based Functions -->
+                <div>
+                  <h4 class="font-semibold text-slate-800 mb-3">
+                    Time-Based Functions
+                  </h4>
+
+                  <div
+                    class="bg-slate-50 rounded-lg p-4 border border-slate-200 mb-4"
+                  >
+                    <h5 class="font-semibold text-primary-700 mb-2">
+                      timeRange(...)
+                    </h5>
+                    <div
+                      class="bg-slate-100 p-3 rounded font-mono text-sm mb-2 overflow-x-auto"
+                    >
+                      // Basic: hours timeRange(8, 17); // returns true between
+                      8:00 AM and 5:00 PM // With minutes: hours, mins
+                      timeRange(8, 30, 17, 45); // returns true between 8:30 AM
+                      and 5:45 PM // Complete: hours, mins, secs timeRange(8,
+                      30, 0, 17, 45, 30); // 8:30:00 AM to 5:45:30 PM // With
+                      GMT parameter timeRange(8, 17, "GMT"); // 8:00 AM to 5:00
+                      PM GMT regardless of local timezone
+                    </div>
+                    <p class="text-slate-700 text-sm mb-2">
+                      Returns true if the local or GMT time is within the
+                      specified range.
+                    </p>
+                    <div class="text-sm text-slate-600">
+                      <p><strong>Parameters (flexible):</strong></p>
+                      <ul class="list-disc ml-5 mb-2">
+                        <li>
+                          Basic form:
+                          <code>timeRange(hour1, hour2, [gmt])</code>
+                        </li>
+                        <li>
+                          With minutes:
+                          <code
+                            >timeRange(hour1, min1, hour2, min2, [gmt])</code
+                          >
+                        </li>
+                        <li>
+                          Complete:
+                          <code
+                            >timeRange(hour1, min1, sec1, hour2, min2, sec2,
+                            [gmt])</code
+                          >
+                        </li>
+                      </ul>
+                      <p>
+                        <strong>Common Usage:</strong> Time-based proxy rules,
+                        such as different configurations during business hours.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div
+                    class="bg-slate-50 rounded-lg p-4 border border-slate-200 mb-4"
+                  >
+                    <h5 class="font-semibold text-primary-700 mb-2">
+                      dateRange(...)
+                    </h5>
+                    <div
+                      class="bg-slate-100 p-3 rounded font-mono text-sm mb-2 overflow-x-auto"
+                    >
+                      // Specific days: day1, month1, day2, month2 dateRange(1,
+                      "JAN", 31, "DEC"); // returns true all year // Specific
+                      dates: day1, month1, year1, day2, month2, year2
+                      dateRange(1, "JAN", 2023, 31, "DEC", 2023); // true for
+                      all of 2023 // By day of week dateRange("MON", "FRI"); //
+                      true Monday through Friday // By month dateRange("JAN",
+                      "MAR"); // true in January through March // With GMT
+                      parameter dateRange(1, "JAN", 31, "DEC", "GMT"); // uses
+                      GMT date
+                    </div>
+                    <p class="text-slate-700 text-sm mb-2">
+                      Returns true if the current date falls within the
+                      specified range.
+                    </p>
+                    <div class="text-sm text-slate-600">
+                      <p><strong>Parameters (extremely flexible):</strong></p>
+                      <ul class="list-disc ml-5 mb-2">
+                        <li>
+                          Month strings are three-letter abbreviations (JAN,
+                          FEB, etc.)
+                        </li>
+                        <li>
+                          Day of week strings are three-letter abbreviations
+                          (MON, TUE, etc.)
+                        </li>
+                        <li>Final parameter can be "GMT" to use GMT time</li>
+                      </ul>
+                      <p>
+                        <strong>Common Usage:</strong> Date-specific proxy
+                        rules, seasonal configurations, or weekend/weekday
+                        variations.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div
+                    class="bg-slate-50 rounded-lg p-4 border border-slate-200"
+                  >
+                    <h5 class="font-semibold text-primary-700 mb-2">
+                      weekdayRange(...)
+                    </h5>
+                    <div
+                      class="bg-slate-100 p-3 rounded font-mono text-sm mb-2 overflow-x-auto"
+                    >
+                      // Day range weekdayRange("MON", "FRI"); // true Monday
+                      through Friday // Single day weekdayRange("SAT"); // true
+                      only on Saturday // With GMT parameter weekdayRange("MON",
+                      "FRI", "GMT"); // uses GMT day of week
+                    </div>
+                    <p class="text-slate-700 text-sm mb-2">
+                      Returns true if the current day falls within the specified
+                      range.
+                    </p>
+                    <div class="text-sm text-slate-600">
+                      <p><strong>Parameters:</strong></p>
+                      <ul class="list-disc ml-5 mb-2">
+                        <li>
+                          <code>wd1</code>: Starting day of week (three-letter
+                          abbreviation)
+                        </li>
+                        <li><code>wd2</code>: (Optional) Ending day of week</li>
+                        <li>
+                          <code>gmt</code>: (Optional) String "GMT" to use GMT
+                          time
+                        </li>
+                      </ul>
+                      <p>
+                        <strong>Common Usage:</strong> Different proxy
+                        configurations for weekdays vs. weekends.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Return Values Section -->
+            <div id="return-values" class="mb-10">
+              <h3
+                class="text-xl font-semibold text-slate-800 mb-4 flex items-center gap-2 pb-2 border-b border-slate-200"
+              >
+                <i class="ri-arrow-go-back-line text-primary-500"></i> Return
+                Value Format
+              </h3>
+
+              <p class="mb-4 text-slate-700">
+                The FindProxyForURL function must return a string in a specific
+                format that tells the browser which proxy to use:
+              </p>
+
+              <div class="space-y-4">
+                <div class="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                  <h4 class="font-semibold text-slate-800 mb-2">
+                    Direct Connection
+                  </h4>
+                  <div class="bg-slate-100 p-3 rounded font-mono text-sm mb-2">
+                    return "DIRECT";
+                  </div>
+                  <p class="text-slate-700 text-sm">
+                    Instructs the browser to connect directly to the destination
+                    without using any proxy.
+                  </p>
+                </div>
+
+                <div class="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                  <h4 class="font-semibold text-slate-800 mb-2">HTTP Proxy</h4>
+                  <div class="bg-slate-100 p-3 rounded font-mono text-sm mb-2">
+                    return "PROXY proxy.example.com:8080";
+                  </div>
+                  <p class="text-slate-700 text-sm">
+                    Routes traffic through the specified HTTP proxy server and
+                    port.
+                  </p>
+                </div>
+
+                <div class="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                  <h4 class="font-semibold text-slate-800 mb-2">SOCKS Proxy</h4>
+                  <div class="bg-slate-100 p-3 rounded font-mono text-sm mb-2">
+                    return "SOCKS socks.example.com:1080";
+                  </div>
+                  <p class="text-slate-700 text-sm">
+                    Routes traffic through the specified SOCKS proxy server and
+                    port.
+                  </p>
+                </div>
+
+                <div class="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                  <h4 class="font-semibold text-slate-800 mb-2">
+                    Proxy Chaining (Fallback)
+                  </h4>
+                  <div class="bg-slate-100 p-3 rounded font-mono text-sm mb-2">
+                    return "PROXY primary.example.com:8080; PROXY
+                    backup.example.com:8080; DIRECT";
+                  </div>
+                  <p class="text-slate-700 text-sm">
+                    Creates a fallback chain where the browser tries each option
+                    in sequence until one succeeds. If the first proxy fails, it
+                    tries the second, and so on.
+                  </p>
+                </div>
+              </div>
+
+              <div
+                class="mt-4 p-4 bg-blue-50 border-l-4 border-blue-500 rounded text-blue-800"
+              >
+                <div class="flex">
+                  <div class="flex-shrink-0">
+                    <i
+                      class="ri-information-line text-blue-500 text-lg mr-2"
+                    ></i>
+                  </div>
+                  <div>
+                    <p class="font-medium">Important Note:</p>
+                    <p class="text-sm">
+                      The syntax is case-sensitive. "PROXY" must be uppercase.
+                      Multiple entries must be separated by semicolons with a
+                      space after each semicolon.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Advanced Techniques Section -->
+            <div id="advanced-techniques" class="mb-10">
+              <h3
+                class="text-xl font-semibold text-slate-800 mb-4 flex items-center gap-2 pb-2 border-b border-slate-200"
+              >
+                <i class="ri-settings-5-line text-primary-500"></i> Advanced
+                Techniques
+              </h3>
+
+              <p class="mb-4 text-slate-700">
+                Beyond the basic rules, here are some advanced techniques for
+                creating more sophisticated PAC scripts:
+              </p>
+
+              <div class="space-y-5">
+                <div
+                  class="bg-white rounded-lg border border-slate-200 overflow-hidden"
+                >
+                  <div class="bg-slate-50 px-4 py-3 border-b border-slate-200">
+                    <div class="flex items-center gap-2">
+                      <i class="ri-box-3-line text-primary-500"></i>
+                      <h4 class="font-semibold text-slate-800">
+                        Combining Multiple Conditions
+                      </h4>
+                    </div>
+                  </div>
+                  <div class="p-4">
+                    <p class="text-slate-700 mb-3">
+                      You can combine multiple conditions using logical
+                      operators to create more complex rules.
+                    </p>
+
+                    <div
+                      class="bg-slate-50 p-3 rounded border border-slate-200 mb-3"
+                    >
+                      <h5 class="font-medium text-sm mb-1">Example:</h5>
+                      <div class="font-mono text-sm">
+                        <p>// Match internal servers during business hours</p>
+                        <p>if (isInNet(host, "10.0.0.0", "255.0.0.0") &&</p>
+                        <p>weekdayRange("MON", "FRI") &&</p>
+                        <p>timeRange(8, 17)) {</p>
+                        <p class="pl-4">return "DIRECT";</p>
+                        <p>}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div
+                  class="bg-white rounded-lg border border-slate-200 overflow-hidden"
+                >
+                  <div class="bg-slate-50 px-4 py-3 border-b border-slate-200">
+                    <div class="flex items-center gap-2">
+                      <i class="ri-repeat-line text-primary-500"></i>
+                      <h4 class="font-semibold text-slate-800">
+                        Load Balancing
+                      </h4>
+                    </div>
+                  </div>
+                  <div class="p-4">
+                    <p class="text-slate-700 mb-3">
+                      Distribute traffic across multiple proxy servers by
+                      implementing simple load balancing.
+                    </p>
+
+                    <div
+                      class="bg-slate-50 p-3 rounded border border-slate-200 mb-3"
+                    >
+                      <h5 class="font-medium text-sm mb-1">Example:</h5>
+                      <div class="font-mono text-sm">
+                        <p>function loadBalance() {</p>
+                        <p>var date = new Date();</p>
+                        <p>var minutes = date.getMinutes();</p>
+                        <p></p>
+                        <p>// Simple round-robin every 15 minutes</p>
+                        <p>if (minutes < 15) {</p>
+                        <p>return "PROXY proxy1.example.com:8080";</p>
+                        <p>} else if (minutes < 30) {</p>
+                        <p>return "PROXY proxy2.example.com:8080";</p>
+                        <p>} else if (minutes < 45) {</p>
+                        <p>return "PROXY proxy3.example.com:8080";</p>
+                        <p>} else {</p>
+                        <p>return "PROXY proxy4.example.com:8080";</p>
+                        <p>}</p>
+                        <p>}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div
+                  class="bg-white rounded-lg border border-slate-200 overflow-hidden"
+                >
+                  <div class="bg-slate-50 px-4 py-3 border-b border-slate-200">
+                    <div class="flex items-center gap-2">
+                      <i class="ri-hash-line text-primary-500"></i>
+                      <h4 class="font-semibold text-slate-800">
+                        Host-Based Load Balancing
+                      </h4>
+                    </div>
+                  </div>
+                  <div class="p-4">
+                    <p class="text-slate-700 mb-3">
+                      Distribute traffic based on hostname to ensure the same
+                      host always uses the same proxy.
+                    </p>
+
+                    <div
+                      class="bg-slate-50 p-3 rounded border border-slate-200 mb-3"
+                    >
+                      <h5 class="font-medium text-sm mb-1">Example:</h5>
+                      <div class="font-mono text-sm">
+                        <p>function hashHostname(host) {</p>
+                        <p>var hash = 0;</p>
+                        <p>for (var i = 0; i < host.length; i++) {</p>
+                        <p>hash = (hash << 5) - hash + host.charCodeAt(i);</p>
+                        <p>hash = hash & hash; // Convert to 32-bit integer</p>
+                        <p>}</p>
+                        <p>
+                          return Math.abs(hash) % 4; // Modulo number of proxies
+                        </p>
+                        <p>}</p>
+                        <p></p>
+                        <p>function selectProxy(host) {</p>
+                        <p>var proxies = [</p>
+                        <p>"PROXY proxy1.example.com:8080",</p>
+                        <p>"PROXY proxy2.example.com:8080",</p>
+                        <p>"PROXY proxy3.example.com:8080",</p>
+                        <p>"PROXY proxy4.example.com:8080"</p>
+                        <p>];</p>
+                        <p></p>
+                        <p>return proxies[hashHostname(host)];</p>
+                        <p>}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Best Practices Section -->
+            <div id="best-practices" class="mb-10">
+              <h3
+                class="text-xl font-semibold text-slate-800 mb-4 flex items-center gap-2 pb-2 border-b border-slate-200"
+              >
+                <i class="ri-award-line text-primary-500"></i> Best Practices
+              </h3>
+
+              <div class="space-y-4">
+                <div class="bg-white rounded-lg border border-slate-200 p-4">
+                  <h4
+                    class="font-semibold text-slate-800 mb-2 flex items-center"
+                  >
+                    <i class="ri-speed-line text-primary-600 mr-2"></i>
+                    Performance Optimization
+                  </h4>
+                  <ul class="list-disc ml-5 text-slate-700 space-y-2">
+                    <li>
+                      Minimize DNS lookups (<code>dnsResolve</code> and
+                      <code>isResolvable</code>) which can introduce delays
+                    </li>
+                    <li>
+                      Order conditions from most frequent to least frequent
+                      matches for better performance
+                    </li>
+                    <li>
+                      Use caching techniques for expensive operations if your
+                      script is complex
+                    </li>
+                    <li>
+                      Keep your PAC script as small and efficient as possible
+                    </li>
+                  </ul>
+                </div>
+
+                <div class="bg-white rounded-lg border border-slate-200 p-4">
+                  <h4
+                    class="font-semibold text-slate-800 mb-2 flex items-center"
+                  >
+                    <i class="ri-shield-check-line text-primary-600 mr-2"></i>
+                    Reliability
+                  </h4>
+                  <ul class="list-disc ml-5 text-slate-700 space-y-2">
+                    <li>
+                      Always include a default return value at the end of your
+                      script
+                    </li>
+                    <li>
+                      Use proxy chaining for important connections to provide
+                      fallback options
+                    </li>
+                    <li>
+                      Test your PAC script thoroughly across different browsers
+                      and platforms
+                    </li>
+                    <li>
+                      Consider network latency when implementing time-based
+                      functions
+                    </li>
+                  </ul>
+                </div>
+
+                <div class="bg-white rounded-lg border border-slate-200 p-4">
+                  <h4
+                    class="font-semibold text-slate-800 mb-2 flex items-center"
+                  >
+                    <i class="ri-file-text-line text-primary-600 mr-2"></i>
+                    Maintainability
+                  </h4>
+                  <ul class="list-disc ml-5 text-slate-700 space-y-2">
+                    <li>
+                      Comment your code thoroughly, especially for complex
+                      conditions
+                    </li>
+                    <li>Use helper functions for clarity and reusability</li>
+                    <li>Keep a changelog to track modifications</li>
+                    <li>
+                      Date your PAC script and include version information
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- Troubleshooting Section -->
+            <div id="troubleshooting" class="mb-6">
+              <h3
+                class="text-xl font-semibold text-slate-800 mb-4 flex items-center gap-2 pb-2 border-b border-slate-200"
+              >
+                <i class="ri-error-warning-line text-primary-500"></i>
+                Troubleshooting
+              </h3>
+
+              <div class="space-y-4">
+                <div class="bg-white rounded-lg border border-slate-200 p-4">
+                  <h4 class="font-semibold text-slate-800 mb-2">
+                    Common Issues and Solutions
+                  </h4>
+
+                  <div class="space-y-3">
+                    <div
+                      class="p-3 bg-slate-50 rounded-lg border border-slate-200"
+                    >
+                      <p class="font-medium text-slate-800 mb-1">
+                        PAC script not being applied
+                      </p>
+                      <ul class="list-disc ml-5 text-sm text-slate-700">
+                        <li>
+                          Verify the MIME type is set to
+                          <code>application/x-javascript</code> or
+                          <code>application/x-ns-proxy-autoconfig</code>
+                        </li>
+                        <li>
+                          Check browser settings to ensure PAC URL is correctly
+                          configured
+                        </li>
+                        <li>
+                          Ensure PAC script is accessible from the client's
+                          network
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div
+                      class="p-3 bg-slate-50 rounded-lg border border-slate-200"
+                    >
+                      <p class="font-medium text-slate-800 mb-1">
+                        Script syntax errors
+                      </p>
+                      <ul class="list-disc ml-5 text-sm text-slate-700">
+                        <li>
+                          Validate JavaScript syntax using browser dev tools or
+                          an online validator
+                        </li>
+                        <li>
+                          Check for missing brackets, semicolons, or quotes
+                        </li>
+                        <li>
+                          Test the script in different browsers to identify
+                          browser-specific issues
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div
+                      class="p-3 bg-slate-50 rounded-lg border border-slate-200"
+                    >
+                      <p class="font-medium text-slate-800 mb-1">
+                        Unexpected proxy behavior
+                      </p>
+                      <ul class="list-disc ml-5 text-sm text-slate-700">
+                        <li>
+                          Add debug logging using <code>alert()</code> in test
+                          environments
+                        </li>
+                        <li>Check rule order - the first matching rule wins</li>
+                        <li>
+                          Verify hostname and URL case sensitivity (convert to
+                          lowercase for comparison)
+                        </li>
+                        <li>
+                          Check for typos in proxy server names and port numbers
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+                <div
+                  class="p-4 bg-yellow-50 rounded-lg border border-yellow-200 text-yellow-800"
+                >
+                  <div class="flex">
+                    <div class="flex-shrink-0">
+                      <i
+                        class="ri-lightbulb-line text-yellow-500 text-lg mr-2"
+                      ></i>
+                    </div>
+                    <div>
+                      <p class="font-medium">Debugging Tip:</p>
+                      <p class="text-sm">
+                        For debugging, you can temporarily modify your PAC
+                        script to return a string that includes debugging
+                        information:
+                      </p>
+                      <pre
+                        class="bg-yellow-100 p-2 rounded mt-2 text-xs overflow-x-auto"
+                      >
+// Debug example
+var result = "PROXY proxy.example.com:8080";
+alert("URL: " + url + "\nHost: " + host + "\nResult: " + result);
+return result;</pre
+                      >
+                      <p class="text-sm mt-2">
+                        Remove this debug code before deploying to production.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- About Tab -->
+          <div id="about" class="tab-content hidden">
+            <div class="mb-6">
+              <h2
+                class="text-2xl font-bold text-slate-800 mb-2 flex items-center gap-2"
+              >
+                <i class="ri-information-line text-primary-500"></i> About PAC
+                Scripts
+              </h2>
+              <p class="text-slate-600">
+                Understanding Proxy Auto-Configuration (PAC) scripts and their
+                role in network infrastructure.
+              </p>
+            </div>
+
+            <div class="mb-6 text-slate-700">
+              <p class="mb-4">
+                A Proxy Auto-Configuration (PAC) file is a JavaScript function
+                that determines whether web browser requests (HTTP, HTTPS, and
+                FTP) go directly to the destination or are forwarded to a web
+                proxy server.
+              </p>
+
+              <p class="mb-4">
+                The PAC file contains a JavaScript function,
+                <code
+                  class="bg-slate-100 px-1.5 py-0.5 rounded text-sm font-mono"
+                  >FindProxyForURL(url, host)</code
+                >, which is called by the browser for each URL that is loaded.
+                The function returns a string that tells the browser whether to
+                use a proxy and which proxy to use.
+              </p>
+            </div>
+
+            <div class="mb-6">
+              <h4 class="text-lg font-semibold text-slate-800 mb-3">
+                Return Value Format
+              </h4>
+              <ul class="space-y-2 pl-5 list-disc text-slate-700">
+                <li>
+                  <code
+                    class="bg-slate-100 px-1.5 py-0.5 rounded text-sm font-mono"
+                    >DIRECT</code
+                  >: Connect directly without any proxy
+                </li>
+                <li>
+                  <code
+                    class="bg-slate-100 px-1.5 py-0.5 rounded text-sm font-mono"
+                    >PROXY host:port</code
+                  >: Use the specified proxy
+                </li>
+                <li>
+                  <code
+                    class="bg-slate-100 px-1.5 py-0.5 rounded text-sm font-mono"
+                    >SOCKS host:port</code
+                  >: Use the specified SOCKS proxy
+                </li>
+              </ul>
+
+              <p class="mt-3 mb-1">
+                You can also return multiple options separated by semicolons as
+                a fallback mechanism:
+              </p>
+              <div class="bg-slate-100 p-3 rounded font-mono text-sm my-2">
+                PROXY proxy1.example.com:8080; PROXY proxy2.example.com:8080;
+                DIRECT
+              </div>
+              <p class="text-slate-500 text-sm">
+                The browser will try each option in order until it succeeds.
+              </p>
+            </div>
+
+            <div class="mb-6">
+              <h4 class="text-lg font-semibold text-slate-800 mb-3">
+                Common Use Cases for PAC Scripts
+              </h4>
+              <ul class="space-y-2 pl-5 list-disc text-slate-700">
+                <li>
+                  <strong>Split routing</strong>: Route internal traffic
+                  directly and external traffic through a proxy
+                </li>
+                <li>
+                  <strong>Geographical distribution</strong>: Route traffic to
+                  different proxies based on target location
+                </li>
+                <li>
+                  <strong>Load balancing</strong>: Distribute traffic among
+                  multiple proxy servers
+                </li>
+                <li>
+                  <strong>Failover configuration</strong>: Provide backup
+                  options when primary proxies are unavailable
+                </li>
+                <li>
+                  <strong>Protocol-specific routing</strong>: Route different
+                  protocols through different proxies
+                </li>
+                <li>
+                  <strong>Time-based routing</strong>: Change proxy
+                  configuration based on time of day or day of week
+                </li>
+              </ul>
+            </div>
+
+            <div class="mb-6">
+              <h4 class="text-lg font-semibold text-slate-800 mb-3">
+                Benefits of Using PAC Scripts
+              </h4>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                  <div class="flex items-start mb-2">
+                    <div class="flex-shrink-0 text-primary-500 mr-2">
+                      <i class="ri-settings-line text-lg"></i>
+                    </div>
+                    <h5 class="font-medium">Centralized Management</h5>
+                  </div>
+                  <p class="text-slate-600 text-sm">
+                    Configure proxy settings for all users from a single file.
+                  </p>
+                </div>
+                <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                  <div class="flex items-start mb-2">
+                    <div class="flex-shrink-0 text-primary-500 mr-2">
+                      <i class="ri-refresh-line text-lg"></i>
+                    </div>
+                    <h5 class="font-medium">Dynamic Configuration</h5>
+                  </div>
+                  <p class="text-slate-600 text-sm">
+                    Automatically adjust proxy settings based on various
+                    conditions.
+                  </p>
+                </div>
+                <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                  <div class="flex items-start mb-2">
+                    <div class="flex-shrink-0 text-primary-500 mr-2">
+                      <i class="ri-speed-line text-lg"></i>
+                    </div>
+                    <h5 class="font-medium">Network Efficiency</h5>
+                  </div>
+                  <p class="text-slate-600 text-sm">
+                    Optimize traffic routing for better performance.
+                  </p>
+                </div>
+                <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                  <div class="flex items-start mb-2">
+                    <div class="flex-shrink-0 text-primary-500 mr-2">
+                      <i class="ri-shield-check-line text-lg"></i>
+                    </div>
+                    <h5 class="font-medium">Enhanced Security</h5>
+                  </div>
+                  <p class="text-slate-600 text-sm">
+                    Enforce proxy usage for external sites while allowing direct
+                    access to internal resources.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-lg border border-slate-200 p-5 mb-6">
+              <h4 class="text-lg font-semibold text-slate-800 mb-3">
+                How PAC Scripts Work
+              </h4>
+
+              <ol class="space-y-4 ml-5 list-decimal text-slate-700">
+                <li>
+                  <strong>Browser Initialization</strong>
+                  <p class="text-sm mt-1">
+                    When a browser is configured to use a PAC file, it downloads
+                    the script from the specified URL.
+                  </p>
+                </li>
+                <li>
+                  <strong>Request Processing</strong>
+                  <p class="text-sm mt-1">
+                    For each web request, the browser calls the
+                    <code>FindProxyForURL(url, host)</code> function in the PAC
+                    script.
+                  </p>
+                </li>
+                <li>
+                  <strong>Evaluation</strong>
+                  <p class="text-sm mt-1">
+                    The PAC script evaluates the request against its rules using
+                    built-in functions and custom logic.
+                  </p>
+                </li>
+                <li>
+                  <strong>Proxy Decision</strong>
+                  <p class="text-sm mt-1">
+                    The script returns a proxy configuration string that tells
+                    the browser how to handle the request.
+                  </p>
+                </li>
+                <li>
+                  <strong>Connection Establishment</strong>
+                  <p class="text-sm mt-1">
+                    The browser establishes a connection according to the
+                    returned proxy configuration.
+                  </p>
+                </li>
+              </ol>
+            </div>
+
+            <div class="p-4 bg-blue-50 rounded-lg border border-blue-200 mb-6">
+              <div class="flex">
+                <div class="flex-shrink-0 text-blue-500 mr-3">
+                  <i class="ri-history-line text-xl"></i>
+                </div>
+                <div>
+                  <h4 class="font-medium text-blue-800 mb-1">
+                    Historical Context
+                  </h4>
+                  <p class="text-sm text-blue-700">
+                    PAC scripts were first introduced by Netscape in 1996 as
+                    part of the Navigator 2.0 browser, and the specification has
+                    remained largely unchanged since then. Despite their age,
+                    PAC scripts remain a standard method for configuring proxy
+                    settings across all major browsers and operating systems,
+                    demonstrating their enduring utility in network management.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="bg-white rounded-lg border border-slate-200 overflow-hidden mb-6"
+            >
+              <div class="bg-slate-50 px-4 py-3 border-b border-slate-200">
+                <h4 class="font-semibold text-slate-800">Deployment Options</h4>
+              </div>
+              <div class="p-4">
+                <ul class="space-y-3 text-slate-700">
+                  <li class="flex items-start">
+                    <div class="flex-shrink-0 text-primary-500 mr-2 mt-1">
+                      <i class="ri-global-line"></i>
+                    </div>
+                    <div>
+                      <strong>Web Server</strong>
+                      <p class="text-sm mt-1">
+                        Host the PAC file on a web server with the correct MIME
+                        type: <code>application/x-javascript</code> or
+                        <code>application/x-ns-proxy-autoconfig</code>.
+                      </p>
+                    </div>
+                  </li>
+                  <li class="flex items-start">
+                    <div class="flex-shrink-0 text-primary-500 mr-2 mt-1">
+                      <i class="ri-file-line"></i>
+                    </div>
+                    <div>
+                      <strong>Local File</strong>
+                      <p class="text-sm mt-1">
+                        Store the PAC file locally on client machines and
+                        configure browsers to use the local file.
+                      </p>
+                    </div>
+                  </li>
+                  <li class="flex items-start">
+                    <div class="flex-shrink-0 text-primary-500 mr-2 mt-1">
+                      <i class="ri-broadcast-line"></i>
+                    </div>
+                    <div>
+                      <strong>DHCP/WPAD</strong>
+                      <p class="text-sm mt-1">
+                        Configure DHCP or DNS for Web Proxy Auto-Discovery
+                        (WPAD) to automatically distribute PAC files to clients.
+                      </p>
+                    </div>
+                  </li>
+                  <li class="flex items-start">
+                    <div class="flex-shrink-0 text-primary-500 mr-2 mt-1">
+                      <i class="ri-group-line"></i>
+                    </div>
+                    <div>
+                      <strong>Group Policy</strong>
+                      <p class="text-sm mt-1">
+                        In Windows environments, use Group Policy to distribute
+                        PAC file configurations to domain computers.
+                      </p>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Tab functionality
+        document.querySelectorAll(".tab-btn").forEach((tab) => {
+          tab.addEventListener("click", function () {
+            // Remove active class from all tabs and tab contents
+            document.querySelectorAll(".tab-btn").forEach((t) => {
+              t.classList.remove(
+                "active",
+                "border-primary-500",
+                "text-primary-600"
+              );
+              t.classList.add("border-transparent", "text-slate-600");
+            });
+            document
+              .querySelectorAll(".tab-content")
+              .forEach((c) => c.classList.add("hidden"));
+
+            // Add active class to current tab and show content
+            this.classList.add(
+              "active",
+              "border-primary-500",
+              "text-primary-600"
+            );
+            this.classList.remove("border-transparent", "text-slate-600");
+
+            const tabContent = document.getElementById(
+              this.getAttribute("data-tab")
+            );
+            if (tabContent) tabContent.classList.remove("hidden");
+          });
+        });
+
+        // Rule counter for unique IDs
+        let ruleCounter = 0;
+
+        // Add rule buttons
+        document
+          .getElementById("addHostRule")
+          .addEventListener("click", () => addRule("host"));
+        document
+          .getElementById("addUrlRule")
+          .addEventListener("click", () => addRule("url"));
+        document
+          .getElementById("addIpRule")
+          .addEventListener("click", () => addRule("ip"));
+        document
+          .getElementById("addDnsDomainRule")
+          .addEventListener("click", () => addRule("dnsDomain"));
+
+        // Generate script button
+        document
+          .getElementById("generateScript")
+          .addEventListener("click", generatePacScript);
+
+        // Copy script button
+        document
+          .getElementById("copyScript")
+          .addEventListener("click", function () {
+            const output = document.getElementById("output");
+            output.select();
+            document.execCommand("copy");
+
+            // Show success notification
+            const notification = document.getElementById("copySuccess");
+            notification.classList.remove("hidden");
+
+            // Hide notification after 3 seconds
+            setTimeout(() => {
+              notification.classList.add("hidden");
+            }, 3000);
+          });
+
+        // Download script button
+        document
+          .getElementById("downloadScript")
+          .addEventListener("click", function () {
+            const output = document.getElementById("output").value;
+            if (!output) {
+              alert("Please generate a PAC script first.");
+              return;
+            }
+
+            const blob = new Blob([output], {
+              type: "application/x-javascript",
+            });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "proxy.pac";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+          });
+
+        // Helper function to check if there are any rules
+        function checkEmptyState() {
+          const rulesContainer = document.getElementById("rulesContainer");
+          const emptyState = document.getElementById("emptyState");
+
+          if (rulesContainer.querySelectorAll(".rule-item").length === 0) {
+            if (!document.getElementById("emptyState")) {
+              rulesContainer.innerHTML = `
+                            <div id="emptyState" class="border-2 border-dashed border-slate-200 rounded-lg p-8 text-center">
+                                <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-slate-100 text-slate-400 mb-4">
+                                    <i class="ri-folder-open-line text-2xl"></i>
+                                </div>
+                                <p class="text-slate-500">No rules added yet. Use the buttons below to add proxy routing rules.</p>
+                            </div>
+                        `;
+            }
+          } else if (emptyState) {
+            emptyState.remove();
+          }
+        }
+
+        // Function to add a new rule
+        function addRule(type) {
+          const id = ruleCounter++;
+          const rulesContainer = document.getElementById("rulesContainer");
+
+          // Remove empty state if it exists
+          const emptyState = document.getElementById("emptyState");
+          if (emptyState) {
+            emptyState.remove();
+          }
+
+          const ruleItem = document.createElement("div");
+          ruleItem.className =
+            "rule-item bg-white rounded-lg border border-slate-200 shadow-sm overflow-hidden";
+          ruleItem.id = `rule-${id}`;
+
+          let ruleTitle = "";
+          let ruleTypeText = "";
+          let ruleIcon = "";
+          let ruleContent = "";
+
+          switch (type) {
+            case "host":
+              ruleTitle = "Host Rule";
+              ruleTypeText = "HOST";
+              ruleIcon = "ri-server-line";
+              ruleContent = `
+                            <div class="p-4">
+                                <div class="mb-4">
+                                    <label for="host-${id}" class="block text-sm font-medium text-slate-700 mb-2">Host Match:</label>
+                                    <input type="text" id="host-${id}" placeholder="example.com" class="w-full px-3 py-2 rounded border border-slate-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors">
+                                    <p class="mt-1 text-sm text-slate-500">Match a specific hostname exactly</p>
+                                </div>
+                                <div>
+                                    <label for="host-proxy-${id}" class="block text-sm font-medium text-slate-700 mb-2">Proxy for this host:</label>
+                                    <input type="text" id="host-proxy-${id}" placeholder="PROXY host:port or DIRECT" class="w-full px-3 py-2 rounded border border-slate-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors">
+                                </div>
+                            </div>
+                        `;
+              break;
+            case "url":
+              ruleTitle = "URL Pattern Rule";
+              ruleTypeText = "URL";
+              ruleIcon = "ri-link";
+              ruleContent = `
+                            <div class="p-4">
+                                <div class="mb-4">
+                                    <label for="url-${id}" class="block text-sm font-medium text-slate-700 mb-2">URL Pattern Match:</label>
+                                    <input type="text" id="url-${id}" placeholder="http://*.example.com/path/*" class="w-full px-3 py-2 rounded border border-slate-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors">
+                                    <p class="mt-1 text-sm text-slate-500">Use * as wildcard (uses shExpMatch function)</p>
+                                </div>
+                                <div>
+                                    <label for="url-proxy-${id}" class="block text-sm font-medium text-slate-700 mb-2">Proxy for this URL pattern:</label>
+                                    <input type="text" id="url-proxy-${id}" placeholder="PROXY host:port or DIRECT" class="w-full px-3 py-2 rounded border border-slate-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors">
+                                </div>
+                            </div>
+                        `;
+              break;
+            case "ip":
+              ruleTitle = "IP Address/Range Rule";
+              ruleTypeText = "IP";
+              ruleIcon = "ri-router-line";
+              ruleContent = `
+                            <div class="p-4">
+                                <div class="mb-4">
+                                    <label for="ip-${id}" class="block text-sm font-medium text-slate-700 mb-2">IP Address/Range:</label>
+                                    <input type="text" id="ip-${id}" placeholder="192.168.1.0" class="w-full px-3 py-2 rounded border border-slate-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors">
+                                </div>
+                                <div class="mb-4">
+                                    <label for="mask-${id}" class="block text-sm font-medium text-slate-700 mb-2">Subnet Mask:</label>
+                                    <input type="text" id="mask-${id}" placeholder="255.255.255.0" class="w-full px-3 py-2 rounded border border-slate-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors">
+                                </div>
+                                <div>
+                                    <label for="ip-proxy-${id}" class="block text-sm font-medium text-slate-700 mb-2">Proxy for this IP range:</label>
+                                    <input type="text" id="ip-proxy-${id}" placeholder="PROXY host:port or DIRECT" class="w-full px-3 py-2 rounded border border-slate-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors">
+                                </div>
+                            </div>
+                        `;
+              break;
+            case "dnsDomain":
+              ruleTitle = "DNS Domain Rule";
+              ruleTypeText = "DOMAIN";
+              ruleIcon = "ri-global-line";
+              ruleContent = `
+                            <div class="p-4">
+                                <div class="mb-4">
+                                    <label for="domain-${id}" class="block text-sm font-medium text-slate-700 mb-2">DNS Domain:</label>
+                                    <input type="text" id="domain-${id}" placeholder=".example.com" class="w-full px-3 py-2 rounded border border-slate-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors">
+                                    <p class="mt-1 text-sm text-slate-500">Include the leading dot (matches domain and all subdomains)</p>
+                                </div>
+                                <div>
+                                    <label for="domain-proxy-${id}" class="block text-sm font-medium text-slate-700 mb-2">Proxy for this domain:</label>
+                                    <input type="text" id="domain-proxy-${id}" placeholder="PROXY host:port or DIRECT" class="w-full px-3 py-2 rounded border border-slate-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors">
+                                </div>
+                            </div>
+                        `;
+              break;
+          }
+
+          ruleItem.innerHTML = `
+                    <div class="bg-slate-50 px-4 py-3 flex items-center justify-between border-b border-slate-200">
+                        <div class="flex items-center space-x-2">
+                            <i class="${ruleIcon} text-primary-500"></i>
+                            <span class="font-medium text-slate-700">${ruleTitle}</span>
+                            <span class="bg-primary-100 text-primary-800 text-xs px-2 py-1 rounded font-medium">${ruleTypeText}</span>
+                        </div>
+                        <button type="button" class="remove-btn text-red-500 hover:bg-red-50 p-1.5 rounded-md transition-colors" data-rule-id="${id}">
+                            <i class="ri-delete-bin-6-line"></i>
+                        </button>
+                    </div>
+                    <input type="hidden" id="rule-type-${id}" value="${type}">
+                    ${ruleContent}
+                `;
+
+          rulesContainer.appendChild(ruleItem);
+
+          // Add event listener to the remove button
+          ruleItem
+            .querySelector(".remove-btn")
+            .addEventListener("click", function () {
+              const ruleId = this.getAttribute("data-rule-id");
+              document.getElementById(`rule-${ruleId}`).remove();
+              checkEmptyState();
+            });
+        }
+
+        // Function to generate the PAC script
+        function generatePacScript() {
+          let script = `// Proxy Auto-Configuration (PAC) file
+// Generated: ${new Date().toLocaleString()}
+
+function FindProxyForURL(url, host) {
+    // Default values
+    var defaultProxy = "${
+      document.getElementById("defaultProxy").value || "DIRECT"
+    }";
+    
+    // Convert hostname to lowercase
+    host = host.toLowerCase();
+    
+    // URL in lowercase
+    var lUrl = url.toLowerCase();
+    
+`;
+
+          // Add rules based on user configuration
+          const rules = document.querySelectorAll(".rule-item");
+          let hasRules = false;
+
+          rules.forEach((rule) => {
+            const ruleId = rule.id.split("-")[1];
+            const ruleType = document.getElementById(
+              `rule-type-${ruleId}`
+            ).value;
+
+            switch (ruleType) {
+              case "host":
+                const host = document.getElementById(`host-${ruleId}`).value;
+                const hostProxy = document.getElementById(
+                  `host-proxy-${ruleId}`
+                ).value;
+
+                if (host && hostProxy) {
+                  hasRules = true;
+                  script += `    // Host rule for ${host}
+    if (host === "${host}") {
+        return "${hostProxy}";
+    }
+    
+`;
+                }
+                break;
+              case "url":
+                const url = document.getElementById(`url-${ruleId}`).value;
+                const urlProxy = document.getElementById(
+                  `url-proxy-${ruleId}`
+                ).value;
+
+                if (url && urlProxy) {
+                  hasRules = true;
+                  script += `    // URL pattern rule for ${url}
+    if (shExpMatch(lUrl, "${url}")) {
+        return "${urlProxy}";
+    }
+    
+`;
+                }
+                break;
+              case "ip":
+                const ip = document.getElementById(`ip-${ruleId}`).value;
+                const mask = document.getElementById(`mask-${ruleId}`).value;
+                const ipProxy = document.getElementById(
+                  `ip-proxy-${ruleId}`
+                ).value;
+
+                if (ip && mask && ipProxy) {
+                  hasRules = true;
+                  script += `    // IP range rule for ${ip}/${mask}
+    if (isInNet(host, "${ip}", "${mask}") || isInNet(dnsResolve(host), "${ip}", "${mask}")) {
+        return "${ipProxy}";
+    }
+    
+`;
+                }
+                break;
+              case "dnsDomain":
+                const domain = document.getElementById(
+                  `domain-${ruleId}`
+                ).value;
+                const domainProxy = document.getElementById(
+                  `domain-proxy-${ruleId}`
+                ).value;
+
+                if (domain && domainProxy) {
+                  hasRules = true;
+                  script += `    // DNS Domain rule for ${domain}
+    if (dnsDomainIs(host, "${domain}")) {
+        return "${domainProxy}";
+    }
+    
+`;
+                }
+                break;
+            }
+          });
+
+          // Add any custom functions provided by the user
+          const additionalFunctions = document.getElementById(
+            "additionalFunctions"
+          ).value;
+          if (additionalFunctions) {
+            script += `    // Additional custom logic
+${additionalFunctions}
+    
+`;
+          }
+
+          // Default return
+          script += `    // Default proxy${
+            hasRules ? " (used if no rules match)" : ""
+          }
+    return defaultProxy;
+}`;
+
+          document.getElementById("output").value = script;
+        }
+
+        // Check empty state on load
+        checkEmptyState();
+      });
+    </script>
+  </body>
+</html>
