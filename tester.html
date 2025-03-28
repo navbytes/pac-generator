@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rule Tester | PAC Script Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="css/themes.css" />
+    <link rel="stylesheet" href="css/mobile.css" />
+    <script src="js/tailwind.config.js"></script>
+  </head>
+  <body class="bg-slate-50 text-slate-800 font-sans">
+    <div class="container max-w-6xl mx-auto px-4 py-8 md:px-6 lg:px-8">
+      <!-- Header -->
+      <header class="text-center mb-10">
+        <div class="flex justify-center items-center mb-4">
+          <div class="bg-primary-500 text-white p-3 rounded-full">
+            <i class="ri-code-box-line text-2xl"></i>
+          </div>
+        </div>
+        <h1 class="text-3xl font-bold text-slate-800 mb-3">
+          PAC Script Generator
+        </h1>
+        <p class="text-slate-600 max-w-xl mx-auto text-lg">
+          Create efficient and customized Proxy Auto-Configuration scripts for
+          your enterprise network.
+        </p>
+
+        <!-- Navigation -->
+        <nav class="flex justify-center gap-4 mt-6">
+          <a
+            href="index.html"
+            class="px-4 py-2 bg-white border border-slate-300 text-slate-700 rounded-md hover:bg-slate-50 transition-colors text-sm font-medium"
+          >
+            <i class="ri-tools-line mr-1.5"></i> Builder
+          </a>
+          <a
+            href="tester.html"
+            class="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors text-sm font-medium"
+          >
+            <i class="ri-test-tube-line mr-1.5"></i> Rule Tester
+          </a>
+          <a
+            href="documentation.html"
+            class="px-4 py-2 bg-white border border-slate-300 text-slate-700 rounded-md hover:bg-slate-50 transition-colors text-sm font-medium"
+          >
+            <i class="ri-book-2-line mr-1.5"></i> Documentation
+          </a>
+          <a
+            href="about.html"
+            class="px-4 py-2 bg-white border border-slate-300 text-slate-700 rounded-md hover:bg-slate-50 transition-colors text-sm font-medium"
+          >
+            <i class="ri-information-line mr-1.5"></i> About
+          </a>
+        </nav>
+
+        <!-- Theme Toggle -->
+        <div class="flex justify-center mt-4">
+          <button
+            id="themeToggle"
+            class="flex items-center px-3 py-1.5 bg-white border border-slate-300 rounded-lg shadow-sm text-sm text-slate-700"
+          >
+            <i class="ri-sun-line mr-1.5" id="themeIcon"></i>
+            <span id="themeText">Light Mode</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Main Card -->
+      <div
+        class="bg-white rounded-xl shadow-card border border-slate-200 overflow-hidden"
+      >
+        <div class="p-6">
+          <!-- Success notification -->
+          <div
+            id="notification"
+            class="hidden mb-6 flex items-center p-4 bg-green-50 border-l-4 border-green-500 rounded-md"
+          >
+            <i class="ri-checkbox-circle-line text-green-500 mr-3 text-lg"></i>
+            <p id="notificationText" class="text-green-700 font-medium">
+              Action completed successfully!
+            </p>
+          </div>
+
+          <!-- Tester Content -->
+          <div class="mb-6">
+            <h2
+              class="text-2xl font-bold text-slate-800 mb-2 flex items-center gap-2"
+            >
+              <i class="ri-test-tube-line text-primary-500"></i> Rule Tester
+            </h2>
+            <p class="text-slate-600 mb-6">
+              Test your PAC script rules against URLs to see which proxy would
+              be used.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+              <div>
+                <div
+                  class="bg-slate-50 p-5 rounded-lg border border-slate-200 h-full"
+                >
+                  <h3 class="font-semibold text-slate-800 mb-4">Test Input</h3>
+                  <div class="mb-4">
+                    <label
+                      for="testUrl"
+                      class="block text-sm font-medium text-slate-700 mb-2"
+                      >URL to Test:</label
+                    >
+                    <input
+                      type="text"
+                      id="testUrl"
+                      placeholder="https://example.com/path/page.html"
+                      class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
+                    />
+                    <p class="mt-1 text-xs text-slate-500">
+                      Enter the full URL you want to test
+                    </p>
+                  </div>
+
+                  <div class="mb-6">
+                    <label
+                      for="testPacScript"
+                      class="block text-sm font-medium text-slate-700 mb-2"
+                      >PAC Script:</label
+                    >
+                    <div class="flex items-center mb-2 space-x-2">
+                      <button
+                        id="loadSavedConfig"
+                        class="text-xs bg-primary-100 text-primary-800 px-2 py-1 rounded"
+                      >
+                        <i class="ri-folder-open-line mr-1"></i> Load Saved
+                      </button>
+                      <button
+                        id="loadDefaultConfig"
+                        class="text-xs bg-slate-100 text-slate-800 px-2 py-1 rounded"
+                      >
+                        <i class="ri-file-line mr-1"></i> Use Default
+                      </button>
+                    </div>
+                    <textarea
+                      id="testPacScript"
+                      placeholder="Paste your PAC script here or load a saved configuration..."
+                      class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors font-mono text-xs h-40"
+                    ></textarea>
+                  </div>
+
+                  <button
+                    id="runTest"
+                    class="flex items-center px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-md shadow-sm transition-colors"
+                  >
+                    <i class="ri-play-line mr-2"></i> Run Test
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <div
+                  id="testResults"
+                  class="bg-slate-50 p-5 rounded-lg border border-slate-200 h-full hidden"
+                >
+                  <h3 class="font-semibold text-slate-800 mb-4">
+                    Test Results
+                  </h3>
+                  <div
+                    class="bg-white rounded-lg border border-slate-200 overflow-hidden"
+                  >
+                    <div
+                      class="bg-slate-50 px-4 py-3 border-b border-slate-200"
+                    >
+                      <div class="font-medium text-slate-700">
+                        Proxy Decision
+                      </div>
+                    </div>
+                    <div class="p-4">
+                      <p class="mb-2">
+                        <span class="text-slate-700 font-medium">URL:</span>
+                        <span id="resultUrl" class="font-mono text-sm"></span>
+                      </p>
+                      <p class="mb-2">
+                        <span class="text-slate-700 font-medium">Host:</span>
+                        <span id="resultHost" class="font-mono text-sm"></span>
+                      </p>
+                      <p class="mb-2">
+                        <span class="text-slate-700 font-medium"
+                          >Matched Rule:</span
+                        >
+                        <span id="resultRule" class="font-mono text-sm"></span>
+                      </p>
+                      <p class="mt-3 font-medium">
+                        <span class="text-slate-700">Proxy Used:</span>
+                        <span
+                          id="resultProxy"
+                          class="bg-green-100 text-green-800 px-2 py-1 rounded font-mono text-sm"
+                        ></span>
+                      </p>
+                    </div>
+                  </div>
+
+                  <div class="mt-6">
+                    <h4 class="font-medium text-slate-800 mb-2">
+                      Execution Trace:
+                    </h4>
+                    <div
+                      class="bg-slate-800 text-slate-100 rounded-lg p-3 font-mono text-xs max-h-[200px] overflow-y-auto"
+                    >
+                      <pre id="executionTrace"></pre>
+                    </div>
+                  </div>
+                </div>
+
+                <div
+                  id="noTestResults"
+                  class="bg-slate-50 p-8 rounded-lg border border-slate-200 h-full flex flex-col items-center justify-center text-center"
+                >
+                  <div
+                    class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-100 text-slate-400 mb-4"
+                  >
+                    <i class="ri-test-tube-line text-3xl"></i>
+                  </div>
+                  <h3 class="font-semibold text-slate-700 mb-2">
+                    No Test Results Yet
+                  </h3>
+                  <p class="text-slate-500 mb-4">
+                    Enter a URL and a PAC script, then click "Run Test" to see
+                    the results.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-blue-50 rounded-lg p-4 border border-blue-200">
+              <div class="flex items-start">
+                <div class="flex-shrink-0 text-blue-500 mt-1 mr-3">
+                  <i class="ri-information-line text-xl"></i>
+                </div>
+                <div>
+                  <h3 class="font-semibold text-blue-800 mb-1">How It Works</h3>
+                  <p class="text-blue-700 text-sm">
+                    This tester uses JavaScript's
+                    <code class="bg-blue-100 px-1 rounded">eval()</code>
+                    function to safely run your PAC script inside a sandbox. It
+                    captures the proxy decision for the URL you provide and
+                    shows the execution path.
+                  </p>
+                  <p class="text-blue-700 text-sm mt-2">
+                    For security reasons, some advanced PAC functions like DNS
+                    resolution are simulated.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <footer class="mt-12 text-center text-slate-500 text-sm">
+        <p>
+          PAC Script Generator © 2025 |
+          <a
+            href="https://github.com/yourusername/pac-script-generator"
+            class="text-primary-600 hover:underline"
+            >GitHub</a
+          >
+        </p>
+      </footer>
+    </div>
+
+    <!-- Saved Configurations Modal -->
+    <div
+      id="savedConfigModal"
+      class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden"
+    >
+      <div
+        class="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 overflow-hidden"
+      >
+        <div
+          class="flex justify-between items-center bg-slate-50 px-6 py-4 border-b border-slate-200"
+        >
+          <h3 class="font-semibold text-lg text-slate-800">
+            Saved Configurations
+          </h3>
+          <button
+            id="closeSavedConfigModal"
+            class="text-slate-400 hover:text-slate-700"
+          >
+            <i class="ri-close-line text-xl"></i>
+          </button>
+        </div>
+        <div class="p-6 max-h-[70vh] overflow-y-auto">
+          <div id="savedConfigsList" class="space-y-3">
+            <!-- Saved configurations will be populated here by JS -->
+          </div>
+          <div id="noSavedConfigs" class="text-center py-6 text-slate-500">
+            <i class="ri-save-line text-4xl mb-2"></i>
+            <p>No saved configurations yet.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Load Scripts -->
+    <script src="js/tailwind.config.js"></script>
+    <script src="js/shared.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/tester.js"></script>
+  </body>
+</html>

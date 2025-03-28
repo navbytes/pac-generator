@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>About PAC Scripts | PAC Script Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="css/themes.css" />
+    <link rel="stylesheet" href="css/mobile.css" />
+    <script src="js/tailwind.config.js"></script>
+  </head>
+  <body class="bg-slate-50 text-slate-800 font-sans">
+    <div class="container max-w-6xl mx-auto px-4 py-8 md:px-6 lg:px-8">
+      <!-- Header -->
+      <header class="text-center mb-10">
+        <div class="flex justify-center items-center mb-4">
+          <div class="bg-primary-500 text-white p-3 rounded-full">
+            <i class="ri-code-box-line text-2xl"></i>
+          </div>
+        </div>
+        <h1 class="text-3xl font-bold text-slate-800 mb-3">
+          PAC Script Generator
+        </h1>
+        <p class="text-slate-600 max-w-xl mx-auto text-lg">
+          Create efficient and customized Proxy Auto-Configuration scripts for
+          your enterprise network.
+        </p>
+
+        <!-- Navigation -->
+        <nav class="flex justify-center gap-4 mt-6">
+          <a
+            href="index.html"
+            class="px-4 py-2 bg-white border border-slate-300 text-slate-700 rounded-md hover:bg-slate-50 transition-colors text-sm font-medium"
+          >
+            <i class="ri-tools-line mr-1.5"></i> Builder
+          </a>
+          <a
+            href="tester.html"
+            class="px-4 py-2 bg-white border border-slate-300 text-slate-700 rounded-md hover:bg-slate-50 transition-colors text-sm font-medium"
+          >
+            <i class="ri-test-tube-line mr-1.5"></i> Rule Tester
+          </a>
+          <a
+            href="documentation.html"
+            class="px-4 py-2 bg-white border border-slate-300 text-slate-700 rounded-md hover:bg-slate-50 transition-colors text-sm font-medium"
+          >
+            <i class="ri-book-2-line mr-1.5"></i> Documentation
+          </a>
+          <a
+            href="about.html"
+            class="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors text-sm font-medium"
+          >
+            <i class="ri-information-line mr-1.5"></i> About
+          </a>
+        </nav>
+
+        <!-- Theme Toggle -->
+        <div class="flex justify-center mt-4">
+          <button
+            id="themeToggle"
+            class="flex items-center px-3 py-1.5 bg-white border border-slate-300 rounded-lg shadow-sm text-sm text-slate-700"
+          >
+            <i class="ri-sun-line mr-1.5" id="themeIcon"></i>
+            <span id="themeText">Light Mode</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Main Card -->
+      <div
+        class="bg-white rounded-xl shadow-card border border-slate-200 overflow-hidden"
+      >
+        <div class="p-6">
+          <!-- About Content -->
+          <div class="mb-6">
+            <h2
+              class="text-2xl font-bold text-slate-800 mb-2 flex items-center gap-2"
+            >
+              <i class="ri-information-line text-primary-500"></i> About PAC
+              Scripts
+            </h2>
+            <p class="text-slate-600">
+              Understanding Proxy Auto-Configuration (PAC) scripts and their
+              role in network infrastructure.
+            </p>
+          </div>
+
+          <div class="mb-6 text-slate-700">
+            <p class="mb-4">
+              A Proxy Auto-Configuration (PAC) file is a JavaScript function
+              that determines whether web browser requests (HTTP, HTTPS, and
+              FTP) go directly to the destination or are forwarded to a web
+              proxy server.
+            </p>
+
+            <p class="mb-4">
+              The PAC file contains a JavaScript function,
+              <code class="bg-slate-100 px-1.5 py-0.5 rounded text-sm font-mono"
+                >FindProxyForURL(url, host)</code
+              >, which is called by the browser for each URL that is loaded. The
+              function returns a string that tells the browser whether to use a
+              proxy and which proxy to use.
+            </p>
+          </div>
+
+          <div class="mb-6">
+            <h4 class="text-lg font-semibold text-slate-800 mb-3">
+              Return Value Format
+            </h4>
+            <ul class="space-y-2 pl-5 list-disc text-slate-700">
+              <li>
+                <code
+                  class="bg-slate-100 px-1.5 py-0.5 rounded text-sm font-mono"
+                  >DIRECT</code
+                >: Connect directly without any proxy
+              </li>
+              <li>
+                <code
+                  class="bg-slate-100 px-1.5 py-0.5 rounded text-sm font-mono"
+                  >PROXY host:port</code
+                >: Use the specified proxy
+              </li>
+              <li>
+                <code
+                  class="bg-slate-100 px-1.5 py-0.5 rounded text-sm font-mono"
+                  >SOCKS host:port</code
+                >: Use the specified SOCKS proxy
+              </li>
+            </ul>
+
+            <p class="mt-3 mb-1">
+              You can also return multiple options separated by semicolons as a
+              fallback mechanism:
+            </p>
+            <div class="bg-slate-100 p-3 rounded font-mono text-sm my-2">
+              PROXY proxy1.example.com:8080; PROXY proxy2.example.com:8080;
+              DIRECT
+            </div>
+            <p class="text-slate-500 text-sm">
+              The browser will try each option in order until it succeeds.
+            </p>
+          </div>
+
+          <div class="mb-6">
+            <h4 class="text-lg font-semibold text-slate-800 mb-3">
+              Common Use Cases for PAC Scripts
+            </h4>
+            <ul class="space-y-2 pl-5 list-disc text-slate-700">
+              <li>
+                <strong>Split routing</strong>: Route internal traffic directly
+                and external traffic through a proxy
+              </li>
+              <li>
+                <strong>Geographical distribution</strong>: Route traffic to
+                different proxies based on target location
+              </li>
+              <li>
+                <strong>Load balancing</strong>: Distribute traffic among
+                multiple proxy servers
+              </li>
+              <li>
+                <strong>Failover configuration</strong>: Provide backup options
+                when primary proxies are unavailable
+              </li>
+              <li>
+                <strong>Protocol-specific routing</strong>: Route different
+                protocols through different proxies
+              </li>
+              <li>
+                <strong>Time-based routing</strong>: Change proxy configuration
+                based on time of day or day of week
+              </li>
+            </ul>
+          </div>
+
+          <div class="mb-6">
+            <h4 class="text-lg font-semibold text-slate-800 mb-3">
+              Benefits of Using PAC Scripts
+            </h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                <div class="flex items-start mb-2">
+                  <div class="flex-shrink-0 text-primary-500 mr-2">
+                    <i class="ri-settings-line text-lg"></i>
+                  </div>
+                  <h5 class="font-medium">Centralized Management</h5>
+                </div>
+                <p class="text-slate-600 text-sm">
+                  Configure proxy settings for all users from a single file.
+                </p>
+              </div>
+              <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                <div class="flex items-start mb-2">
+                  <div class="flex-shrink-0 text-primary-500 mr-2">
+                    <i class="ri-refresh-line text-lg"></i>
+                  </div>
+                  <h5 class="font-medium">Dynamic Configuration</h5>
+                </div>
+                <p class="text-slate-600 text-sm">
+                  Automatically adjust proxy settings based on various
+                  conditions.
+                </p>
+              </div>
+              <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                <div class="flex items-start mb-2">
+                  <div class="flex-shrink-0 text-primary-500 mr-2">
+                    <i class="ri-speed-line text-lg"></i>
+                  </div>
+                  <h5 class="font-medium">Network Efficiency</h5>
+                </div>
+                <p class="text-slate-600 text-sm">
+                  Optimize traffic routing for better performance.
+                </p>
+              </div>
+              <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                <div class="flex items-start mb-2">
+                  <div class="flex-shrink-0 text-primary-500 mr-2">
+                    <i class="ri-shield-check-line text-lg"></i>
+                  </div>
+                  <h5 class="font-medium">Enhanced Security</h5>
+                </div>
+                <p class="text-slate-600 text-sm">
+                  Enforce proxy usage for external sites while allowing direct
+                  access to internal resources.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-lg border border-slate-200 p-5 mb-6">
+            <h4 class="text-lg font-semibold text-slate-800 mb-3">
+              How PAC Scripts Work
+            </h4>
+
+            <ol class="space-y-4 ml-5 list-decimal text-slate-700">
+              <li>
+                <strong>Browser Initialization</strong>
+                <p class="text-sm mt-1">
+                  When a browser is configured to use a PAC file, it downloads
+                  the script from the specified URL.
+                </p>
+              </li>
+              <li>
+                <strong>Request Processing</strong>
+                <p class="text-sm mt-1">
+                  For each web request, the browser calls the
+                  <code>FindProxyForURL(url, host)</code> function in the PAC
+                  script.
+                </p>
+              </li>
+              <li>
+                <strong>Evaluation</strong>
+                <p class="text-sm mt-1">
+                  The PAC script evaluates the request against its rules using
+                  built-in functions and custom logic.
+                </p>
+              </li>
+              <li>
+                <strong>Proxy Decision</strong>
+                <p class="text-sm mt-1">
+                  The script returns a proxy configuration string that tells the
+                  browser how to handle the request.
+                </p>
+              </li>
+              <li>
+                <strong>Connection Establishment</strong>
+                <p class="text-sm mt-1">
+                  The browser establishes a connection according to the returned
+                  proxy configuration.
+                </p>
+              </li>
+            </ol>
+          </div>
+
+          <div class="p-4 bg-blue-50 rounded-lg border border-blue-200 mb-6">
+            <div class="flex">
+              <div class="flex-shrink-0 text-blue-500 mr-3">
+                <i class="ri-history-line text-xl"></i>
+              </div>
+              <div>
+                <h4 class="font-medium text-blue-800 mb-1">
+                  Historical Context
+                </h4>
+                <p class="text-sm text-blue-700">
+                  PAC scripts were first introduced by Netscape in 1996 as part
+                  of the Navigator 2.0 browser, and the specification has
+                  remained largely unchanged since then. Despite their age, PAC
+                  scripts remain a standard method for configuring proxy
+                  settings across all major browsers and operating systems,
+                  demonstrating their enduring utility in network management.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="bg-white rounded-lg border border-slate-200 overflow-hidden mb-6"
+          >
+            <div class="bg-slate-50 px-4 py-3 border-b border-slate-200">
+              <h4 class="font-semibold text-slate-800">Deployment Options</h4>
+            </div>
+            <div class="p-4">
+              <ul class="space-y-3 text-slate-700">
+                <li class="flex items-start">
+                  <div class="flex-shrink-0 text-primary-500 mr-2 mt-1">
+                    <i class="ri-global-line"></i>
+                  </div>
+                  <div>
+                    <strong>Web Server</strong>
+                    <p class="text-sm mt-1">
+                      Host the PAC file on a web server with the correct MIME
+                      type: <code>application/x-javascript</code> or
+                      <code>application/x-ns-proxy-autoconfig</code>.
+                    </p>
+                  </div>
+                </li>
+                <li class="flex items-start">
+                  <div class="flex-shrink-0 text-primary-500 mr-2 mt-1">
+                    <i class="ri-file-line"></i>
+                  </div>
+                  <div>
+                    <strong>Local File</strong>
+                    <p class="text-sm mt-1">
+                      Store the PAC file locally on client machines and
+                      configure browsers to use the local file.
+                    </p>
+                  </div>
+                </li>
+                <li class="flex items-start">
+                  <div class="flex-shrink-0 text-primary-500 mr-2 mt-1">
+                    <i class="ri-broadcast-line"></i>
+                  </div>
+                  <div>
+                    <strong>DHCP/WPAD</strong>
+                    <p class="text-sm mt-1">
+                      Configure DHCP or DNS for Web Proxy Auto-Discovery (WPAD)
+                      to automatically distribute PAC files to clients.
+                    </p>
+                  </div>
+                </li>
+                <li class="flex items-start">
+                  <div class="flex-shrink-0 text-primary-500 mr-2 mt-1">
+                    <i class="ri-group-line"></i>
+                  </div>
+                  <div>
+                    <strong>Group Policy</strong>
+                    <p class="text-sm mt-1">
+                      In Windows environments, use Group Policy to distribute
+                      PAC file configurations to domain computers.
+                    </p>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div
+            class="bg-white rounded-lg border border-slate-200 overflow-hidden mb-6"
+          >
+            <div class="bg-slate-50 px-4 py-3 border-b border-slate-200">
+              <h4 class="font-semibold text-slate-800">About This Tool</h4>
+            </div>
+            <div class="p-4">
+              <p class="text-slate-700 mb-4">
+                The PAC Script Generator is an open-source tool designed to
+                simplify the creation of Proxy Auto-Configuration scripts. It
+                provides a user-friendly interface for defining proxy rules
+                without requiring extensive knowledge of JavaScript or PAC file
+                syntax.
+              </p>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                  <h5 class="font-medium text-slate-800 mb-2">Features</h5>
+                  <ul class="list-disc ml-5 text-sm text-slate-600 space-y-1">
+                    <li>Visual rule builder with multiple rule types</li>
+                    <li>Quick start templates for common scenarios</li>
+                    <li>Rule testing and validation</li>
+                    <li>Save and load configurations</li>
+                    <li>Comprehensive documentation</li>
+                  </ul>
+                </div>
+                <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                  <h5 class="font-medium text-slate-800 mb-2">Technologies</h5>
+                  <ul class="list-disc ml-5 text-sm text-slate-600 space-y-1">
+                    <li>HTML5 + CSS3</li>
+                    <li>JavaScript (ES6+)</li>
+                    <li>TailwindCSS for styling</li>
+                    <li>LocalStorage for persistence</li>
+                    <li>Responsive design for all devices</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <footer class="mt-12 text-center text-slate-500 text-sm">
+        <p>
+          PAC Script Generator © 2025 |
+          <a
+            href="https://github.com/yourusername/pac-script-generator"
+            class="text-primary-600 hover:underline"
+            >GitHub</a
+          >
+        </p>
+      </footer>
+    </div>
+
+    <!-- Load Scripts -->
+    <script src="js/tailwind.config.js"></script>
+    <script src="js/shared.js"></script>
+  </body>
+</html>

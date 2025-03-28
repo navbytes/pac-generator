@@ -1,0 +1,117 @@
+/* Mobile optimizations */
+@media (max-width: 640px) {
+  /* Stack navigation vertically */
+  nav {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  /* Make buttons full width */
+  nav a {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Adjust rule items */
+  .rule-item {
+    margin-bottom: 1rem;
+  }
+
+  /* Adjust card padding */
+  .p-6 {
+    padding: 1rem;
+  }
+
+  /* Adjust headers */
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  h2 {
+    font-size: 1.25rem;
+  }
+
+  /* Make action buttons stack on mobile */
+  .flex.flex-wrap.gap-3 {
+    flex-direction: column;
+  }
+
+  .flex.flex-wrap.gap-3 button {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+
+  /* Adjust modals */
+  .fixed.inset-0 .bg-white {
+    max-width: 95% !important;
+  }
+
+  /* Adjust template cards */
+  #templatesList {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Responsive tables */
+  table {
+    display: block;
+    overflow-x: auto;
+  }
+
+  /* Improve form fields spacing */
+  input,
+  textarea {
+    font-size: 16px !important; /* Prevent iOS zoom */
+  }
+
+  /* Adjust button sizes */
+  button {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+
+  /* Improve documentation readability */
+  .documentation pre {
+    font-size: 0.75rem;
+    padding: 0.75rem;
+  }
+}
+
+/* Tablet optimizations */
+@media (min-width: 641px) and (max-width: 1024px) {
+  /* Adjust card padding */
+  .p-6 {
+    padding: 1.5rem;
+  }
+
+  /* Two column template grid on tablets */
+  #templatesList {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  /* Adjust spacing */
+  .mb-10 {
+    margin-bottom: 2rem;
+  }
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  body {
+    background-color: white !important;
+  }
+
+  .container {
+    max-width: 100% !important;
+    padding: 0 !important;
+  }
+
+  pre,
+  code {
+    white-space: pre-wrap !important;
+    word-break: break-all !important;
+  }
+}

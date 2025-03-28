@@ -1,0 +1,102 @@
+/* Theme support */
+:root {
+  /* Light theme variables (default) */
+  --bg-main: #f8fafc;
+  --bg-card: #ffffff;
+  --text-main: #1e293b;
+  --text-muted: #64748b;
+  --border-color: #e2e8f0;
+  --primary-color: #0ea5e9;
+  --primary-hover: #0284c7;
+  --secondary-color: #14b8a6;
+  --secondary-hover: #0d9488;
+}
+
+/* Dark theme variables */
+.dark-theme {
+  --bg-main: #0f172a;
+  --bg-card: #1e293b;
+  --text-main: #f1f5f9;
+  --text-muted: #94a3b8;
+  --border-color: #334155;
+  --primary-color: #38bdf8;
+  --primary-hover: #0ea5e9;
+  --secondary-color: #2dd4bf;
+  --secondary-hover: #14b8a6;
+}
+
+/* Apply theme variables */
+.dark-theme {
+  background-color: var(--bg-main);
+  color: var(--text-main);
+}
+
+.dark-theme .bg-white {
+  background-color: var(--bg-card) !important;
+}
+
+.dark-theme .bg-slate-50 {
+  background-color: #1e293b !important;
+}
+
+.dark-theme .bg-slate-100 {
+  background-color: #283548 !important;
+}
+
+.dark-theme .text-slate-800 {
+  color: #f1f5f9 !important;
+}
+
+.dark-theme .text-slate-700 {
+  color: #e2e8f0 !important;
+}
+
+.dark-theme .text-slate-600 {
+  color: #cbd5e1 !important;
+}
+
+.dark-theme .text-slate-500 {
+  color: #94a3b8 !important;
+}
+
+.dark-theme .border-slate-200 {
+  border-color: #334155 !important;
+}
+
+.dark-theme input,
+.dark-theme textarea {
+  background-color: #0f172a !important;
+  color: #f1f5f9 !important;
+  border-color: #334155 !important;
+}
+
+.dark-theme .rule-item {
+  background-color: var(--bg-card) !important;
+}
+
+.dark-theme .bg-primary-50 {
+  background-color: rgba(56, 189, 248, 0.1) !important;
+}
+
+.dark-theme .bg-primary-100 {
+  background-color: rgba(56, 189, 248, 0.2) !important;
+}
+
+.dark-theme .text-primary-800 {
+  color: #38bdf8 !important;
+}
+
+.dark-theme .border-primary-600 {
+  border-color: #38bdf8 !important;
+}
+
+.dark-theme .text-primary-600 {
+  color: #38bdf8 !important;
+}
+
+/* Transition for theme changes */
+body,
+body * {
+  transition: background-color 0.3s ease, color 0.3s ease,
+    border-color 0.3s ease;
+}
